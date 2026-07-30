@@ -3,6 +3,7 @@ import cors from "cors";
 import { env } from "./config/env";
 import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
+import categoryRoutes from "./routes/category.routes";
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/categories", categoryRoutes);
 
 export default app;
