@@ -4,6 +4,7 @@ import { env } from "./config/env";
 import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
 import categoryRoutes from "./routes/category.routes";
+import analyticsRoutes from "./routes/analytics.routes";
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.get("/health", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 export default app;
