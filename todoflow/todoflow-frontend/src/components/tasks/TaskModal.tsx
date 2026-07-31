@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { taskFormSchema, type TaskFormValues } from "../../lib/validations/taskSchema";
 import { useCreateTask, useUpdateTask } from "../../hooks/useTasks";
+import { useCategories } from "../../hooks/useCategories";
 import type { Task } from "../../types/task";
 
 interface TaskModalProps {
@@ -18,6 +19,7 @@ interface TaskModalProps {
 export default function TaskModal({ open, onClose, task }: TaskModalProps) {
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
+  const { data: categories } = useCategories();
 
   const {
     register,
@@ -129,6 +131,21 @@ export default function TaskModal({ open, onClose, task }: TaskModalProps) {
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 focus:ring-2"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-foreground">Category</label>
+                <select
+                  {...register("categoryId")}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 focus:ring-2"
+                >
+                  <option value="">No category</option>
+                  {categories?.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
