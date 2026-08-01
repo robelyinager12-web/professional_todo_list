@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
 import categoryRoutes from "./routes/category.routes";
 import analyticsRoutes from "./routes/analytics.routes";
+import userRoutes from "./routes/user.routes";
 import { notFoundHandler, errorHandler } from "./middlewares/error.middleware";
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/users", userRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

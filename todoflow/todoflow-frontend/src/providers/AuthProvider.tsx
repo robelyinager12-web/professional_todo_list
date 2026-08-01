@@ -5,12 +5,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { fetchMe } from "../lib/api/auth";
 import { useAuthStore } from "../store/authStore";
 
-const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password"];
+function isProtectedPath(pathname: string) {
+  return pathname.startsWith("/dashboard");
+}
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, token, setAuth, clearAuth } = useAuthStore();
+  const { user, setAuth, clearAuth } = useAuthStore();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -18,7 +20,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     if (!storedToken) {
       setChecked(true);
-      if (!PUBLIC_PATHS.includes(pathname)) {
+      if (isProtectedPath(pathname)) {
         router.push("/login");
       }
       return;
@@ -35,13 +37,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       })
       .catch(() => {
         clearAuth();
-        router.push("/login");
+        if (isProtectedPath(pathname)) {
+          router.push("/login");
+        }
       })
       .finally(() => setChecked(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  if (!checked && !PUBLIC_PATHS.includes(pathname)) {
+  if (!checked && isProtectedPath(pathname)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
