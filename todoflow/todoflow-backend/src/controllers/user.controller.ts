@@ -32,6 +32,18 @@ export async function changePassword(req: Request, res: Response) {
   }
 }
 
+export async function uploadAvatar(req: Request, res: Response) {
+  const file = (req as Request & { file?: Express.Multer.File }).file;
+
+  if (!file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  const avatarUrl = `/uploads/avatars/${file.filename}`;
+  const user = await userService.updateProfile(getUserId(req), { avatarUrl });
+  res.status(200).json({ user });
+}
+
 export async function deleteAccount(req: Request, res: Response) {
   await userService.deleteAccount(getUserId(req));
   res.status(204).send();
