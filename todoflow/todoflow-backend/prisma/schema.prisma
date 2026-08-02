@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,6 +22,10 @@ enum TaskStatus {
   ARCHIVED
 }
 
+enum CategoryRole {
+  EDITOR
+}
+
 model User {
   id          String   @id @default(uuid())
   fullName    String
@@ -32,8 +38,10 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  tasks       Task[]
-  categories  Category[]
+  tasks               Task[]
+  categories          Category[]
+  categoryMemberships CategoryMember[]
+  notifications       Notification[]
 
   @@map("users")
 }
@@ -49,26 +57,43 @@ model Category {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   tasks     Task[]
+  members   CategoryMember[]
 
   @@unique([userId, name])
   @@map("categories")
 }
 
+model CategoryMember {
+  id         String       @id @default(uuid())
+  role       CategoryRole @default(EDITOR)
+  createdAt  DateTime     @default(now())
+
+  categoryId String
+  category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, userId])
+  @@map("category_members")
+}
+
 model Task {
-  id          String     @id @default(uuid())
-  title       String
-  description String?
-  priority    Priority   @default(MEDIUM)
-  status      TaskStatus @default(PENDING)
-  colorLabel  String?
-  dueDate     DateTime?
-  reminderAt  DateTime?
-  tags        String[]   @default([])
-  attachments String[]   @default([])
-  isArchived  Boolean    @default(false)
-  completedAt DateTime?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id            String     @id @default(uuid())
+  title         String
+  description   String?
+  priority      Priority   @default(MEDIUM)
+  status        TaskStatus @default(PENDING)
+  colorLabel    String?
+  dueDate       DateTime?
+  reminderAt    DateTime?
+  reminderSent  Boolean    @default(false)
+  tags          String[]   @default([])
+  attachments   String[]   @default([])
+  isArchived    Boolean    @default(false)
+  completedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   userId      String
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -76,7 +101,26 @@ model Task {
   categoryId  String?
   category    Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
+  notifications Notification[]
+
   @@index([userId, status])
   @@index([userId, dueDate])
   @@map("tasks")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  taskId    String?
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([userId, isRead])
+  @@map("notifications")
 }
