@@ -1,3 +1,4 @@
+import Image from "next/image";
 import LoginForm from "../../../components/auth/LoginForm";
 
 export default function LoginPage() {
@@ -13,15 +14,14 @@ export default function LoginPage() {
         <LoginForm />
       </div>
 
-      <div className="hidden w-1/2 items-center justify-center bg-gradient-to-br from-primary/10 via-primary/5 to-background lg:flex">
-        <div className="max-w-md p-10 text-center">
-          <h2 className="text-xl font-semibold text-foreground">
-            Organize your life. Complete more every day.
-          </h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            TodoFlow keeps your tasks, deadlines, and goals in one beautiful place.
-          </p>
-        </div>
+      <div className="relative hidden w-1/2 lg:block">
+        <Image
+          src="/images/login-side.jpg"
+          alt="TodoFlow"
+          fill
+          className="object-cover"
+          priority
+        />
       </div>
     </div>
   );
