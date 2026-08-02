@@ -2,6 +2,7 @@
 
 import { useAuthStore } from "../../store/authStore";
 import NotificationBell from "./NotificationBell";
+import ThemeToggle from "../shared/ThemeToggle";
 
 export default function DashboardHeader() {
   const user = useAuthStore((state) => state.user);
@@ -13,7 +14,8 @@ export default function DashboardHeader() {
         <p className="text-sm font-medium text-foreground">{user?.fullName ?? "there"}</p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
         <NotificationBell />
         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
           {user?.fullName?.charAt(0).toUpperCase() ?? "U"}
