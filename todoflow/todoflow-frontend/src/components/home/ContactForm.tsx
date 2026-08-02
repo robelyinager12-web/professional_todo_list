@@ -79,25 +79,25 @@ export default function ContactForm() {
           <div className="space-y-6">
             <div className="overflow-hidden rounded-xl border border-border">
               <iframe
-                title="TodoFlow office location"
+                title="TodoFlow location"
                 className="h-64 w-full"
                 loading="lazy"
-                src="https://maps.google.com/maps?q=San%20Francisco&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=Ethiopia&t=&z=6&ie=UTF8&iwloc=&output=embed"
               />
             </div>
 
             <div className="space-y-4 rounded-xl border border-border bg-card p-6">
               <div className="flex items-center gap-3 text-sm text-foreground">
                 <Phone size={16} className="text-primary" />
-                +1 (555) 123-4567
+                +251 990004044
               </div>
               <div className="flex items-center gap-3 text-sm text-foreground">
                 <Mail size={16} className="text-primary" />
-                hello@todoflow.app
+                info@sealitemihretclinic.com
               </div>
               <div className="flex items-start gap-3 text-sm text-foreground">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-primary" />
-                548 Market Street, San Francisco, CA 94104
+                Firn Finote Eslam, Ethiopia
               </div>
             </div>
           </div>

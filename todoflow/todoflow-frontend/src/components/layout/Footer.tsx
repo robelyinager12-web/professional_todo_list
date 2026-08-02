@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Twitter, Github, Linkedin } from "lucide-react";
+import { Github, Linkedin, Send } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -11,9 +11,15 @@ export default function Footer() {
             Organize your life. Complete more every day.
           </p>
           <div className="mt-4 flex gap-3 text-muted-foreground">
-            <Twitter size={18} />
-            <Github size={18} />
-            <Linkedin size={18} />
+            <a href="https://github.com/robelyinager12-web/robelyinager12-web" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="hover:text-foreground">
+              <Github size={18} />
+            </a>
+            <a href="https://www.linkedin.com/in/robel-yinager-943b37419/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-foreground">
+              <Linkedin size={18} />
+            </a>
+            <a href="https://t.me/robaNew05" target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="hover:text-foreground">
+              <Send size={18} />
+            </a>
           </div>
         </div>
 
