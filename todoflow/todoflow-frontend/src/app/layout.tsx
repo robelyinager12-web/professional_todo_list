@@ -1,38 +1,22 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import QueryProvider from "../providers/QueryProvider";
-import AuthProvider from "../providers/AuthProvider";
-import ThemeProvider from "../providers/ThemeProvider";
+"use client";
 
-export const metadata: Metadata = {
-  title: "TodoFlow — Organize Your Life. Complete More Every Day.",
-  description: "Plan, manage, prioritize, and accomplish your daily goals with TodoFlow.",
-};
+import { useState } from "react";
+import Sidebar from "../../components/layout/Sidebar";
+import DashboardHeader from "../../components/layout/DashboardHeader";
+import PageTransition from "../../components/shared/PageTransition";
 
-const themeInitScript = `
-(function () {
-  try {
-    var stored = localStorage.getItem("todoflow_theme");
-    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var isDark = stored ? stored === "dark" : prefersDark;
-    if (isDark) document.documentElement.classList.add("dark");
-  } catch (e) {}
-})();
-`;
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
-      <body>
-        <ThemeProvider>
-          <QueryProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </QueryProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <div className="flex">
+      <Sidebar mobileOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <div className="flex-1">
+        <DashboardHeader onMenuClick={() => setMobileMenuOpen(true)} />
+        <main className="p-4 sm:p-6">
+          <PageTransition>{children}</PageTransition>
+        </main>
+      </div>
+    </div>
   );
 }

@@ -12,6 +12,7 @@ import {
   Archive,
   Settings,
   LogOut,
+  X,
 } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 
@@ -26,7 +27,12 @@ const navItems = [
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const clearAuth = useAuthStore((state) => state.clearAuth);
@@ -36,11 +42,16 @@ export default function Sidebar() {
     router.push("/login");
   };
 
-  return (
-    <aside className="flex h-screen w-64 flex-col border-r border-border bg-card px-4 py-6">
-      <Link href="/dashboard" className="mb-8 px-2 text-lg font-semibold text-foreground">
-        ✔ TodoFlow
-      </Link>
+  const content = (
+    <>
+      <div className="mb-8 flex items-center justify-between px-2">
+        <Link href="/dashboard" className="text-lg font-semibold text-foreground" onClick={onClose}>
+          ✔ TodoFlow
+        </Link>
+        <button onClick={onClose} className="text-muted-foreground lg:hidden">
+          <X size={20} />
+        </button>
+      </div>
 
       <nav className="flex-1 space-y-1">
         {navItems.map(({ label, href, icon: Icon }) => {
@@ -50,6 +61,7 @@ export default function Sidebar() {
             <Link
               key={href}
               href={href}
+              onClick={onClose}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition ${
                 isActive
                   ? "bg-primary/10 text-primary"
@@ -70,6 +82,25 @@ export default function Sidebar() {
         <LogOut size={18} />
         Logout
       </button>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-card px-4 py-6 lg:flex">
+        {content}
+      </aside>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="fixed inset-0 bg-black/40" onClick={onClose} />
+          <aside className="fixed inset-y-0 left-0 flex w-64 flex-col bg-card px-4 py-6 shadow-xl">
+            {content}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }
