@@ -97,7 +97,7 @@ export default function ContactForm() {
               </div>
               <div className="flex items-start gap-3 text-sm text-foreground">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-primary" />
-                Firn Finote Eslam, Ethiopia
+                Firn Finote Selam, Ethiopia
               </div>
             </div>
           </div>
