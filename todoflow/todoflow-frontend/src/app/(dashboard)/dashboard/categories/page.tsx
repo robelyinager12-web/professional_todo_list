@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, Users } from "lucide-react";
+import { Plus, Trash2, Users, FolderOpen } from "lucide-react";
 import { useCategories, useCreateCategory, useDeleteCategory } from "../../../../hooks/useCategories";
 import { useAuthStore } from "../../../../store/authStore";
 import ShareCategoryModal from "../../../../components/categories/ShareCategoryModal";
+import ConfirmDialog from "../../../../components/shared/ConfirmDialog";
+import EmptyState from "../../../../components/shared/EmptyState";
 import type { CategoryWithMembers } from "../../../../types/category";
 
 const PRESET_COLORS = ["#6366f1", "#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
@@ -18,6 +20,7 @@ export default function CategoriesPage() {
   const [name, setName] = useState("");
   const [color, setColor] = useState(PRESET_COLORS[0]);
   const [sharingCategory, setSharingCategory] = useState<CategoryWithMembers | null>(null);
+  const [deletingCategory, setDeletingCategory] = useState<CategoryWithMembers | null>(null);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +100,7 @@ export default function CategoriesPage() {
                         <Users size={14} />
                       </button>
                       <button
-                        onClick={() => deleteCategory.mutate(category.id)}
+                        onClick={() => setDeletingCategory(category)}
                         className="text-muted-foreground hover:text-destructive"
                       >
                         <Trash2 size={14} />
@@ -110,12 +113,33 @@ export default function CategoriesPage() {
           })}
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-border py-16 text-center">
-          <p className="text-sm text-muted-foreground">No categories yet. Add your first one above.</p>
-        </div>
+        <EmptyState
+          icon={FolderOpen}
+          title="No categories yet"
+          description="Add your first category above to start organizing tasks."
+        />
       )}
 
       <ShareCategoryModal category={sharingCategory} onClose={() => setSharingCategory(null)} />
+
+      <ConfirmDialog
+        open={!!deletingCategory}
+        title="Delete this category?"
+        description={
+          deletingCategory
+            ? `"${deletingCategory.name}" will be deleted. Tasks in it will become uncategorized, not deleted.`
+            : ""
+        }
+        confirmLabel="Delete"
+        isLoading={deleteCategory.isPending}
+        onConfirm={() => {
+          if (!deletingCategory) return;
+          deleteCategory.mutate(deletingCategory.id, {
+            onSuccess: () => setDeletingCategory(null),
+          });
+        }}
+        onCancel={() => setDeletingCategory(null)}
+      />
     </div>
   );
 }

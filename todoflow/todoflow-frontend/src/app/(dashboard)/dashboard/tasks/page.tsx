@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, ListTodo } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { useTasks } from "../../../../hooks/useTasks";
 import { useDebounce } from "../../../../hooks/useDebounce";
@@ -10,6 +10,8 @@ import TaskModal from "../../../../components/tasks/TaskModal";
 import TaskSearchBar from "../../../../components/tasks/TaskSearchBar";
 import TaskFilters from "../../../../components/tasks/TaskFilters";
 import TaskSortMenu from "../../../../components/tasks/TaskSortMenu";
+import LoadingSkeleton from "../../../../components/shared/LoadingSkeleton";
+import EmptyState from "../../../../components/shared/EmptyState";
 import type { Task, Priority, TaskStatus } from "../../../../types/task";
 import type { TaskQuery } from "../../../../lib/api/tasks";
 
@@ -43,6 +45,8 @@ export default function TasksPage() {
     setEditingTask(task);
     setModalOpen(true);
   };
+
+  const hasFilters = !!(search || status || priority || categoryId);
 
   return (
     <div>
@@ -86,11 +90,7 @@ export default function TasksPage() {
       </div>
 
       {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />
-          ))}
-        </div>
+        <LoadingSkeleton count={4} />
       ) : tasks && tasks.length > 0 ? (
         <div className="space-y-3">
           <AnimatePresence>
@@ -100,13 +100,11 @@ export default function TasksPage() {
           </AnimatePresence>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-border py-16 text-center">
-          <p className="text-sm text-muted-foreground">
-            {search || status || priority || categoryId
-              ? "No tasks match your filters."
-              : "No tasks yet. Create your first one."}
-          </p>
-        </div>
+        <EmptyState
+          icon={ListTodo}
+          title={hasFilters ? "No tasks match your filters" : "No tasks yet"}
+          description={hasFilters ? "Try adjusting your search or filters." : "Create your first task to get started."}
+        />
       )}
 
       <TaskModal open={modalOpen} onClose={() => setModalOpen(false)} task={editingTask} />

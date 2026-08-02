@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Copy, Archive, Trash2, Pencil } from "lucide-react";
 import type { Task } from "../../types/task";
 import PriorityBadge from "./PriorityBadge";
+import ConfirmDialog from "../shared/ConfirmDialog";
 import { useCompleteTask, useArchiveTask, useDeleteTask, useDuplicateTask } from "../../hooks/useTasks";
 
 interface TaskCardProps {
@@ -16,6 +18,7 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
   const archive = useArchiveTask();
   const remove = useDeleteTask();
   const duplicate = useDuplicateTask();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const isDone = task.status === "COMPLETED";
 
@@ -75,11 +78,23 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
           <button onClick={() => archive.mutate(task.id)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground">
             <Archive size={14} />
           </button>
-          <button onClick={() => remove.mutate(task.id)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-destructive">
+          <button onClick={() => setConfirmingDelete(true)} className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-destructive">
             <Trash2 size={14} />
           </button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmingDelete}
+        title="Delete this task?"
+        description={`"${task.title}" will be permanently deleted. This can't be undone.`}
+        confirmLabel="Delete"
+        isLoading={remove.isPending}
+        onConfirm={() => {
+          remove.mutate(task.id, { onSuccess: () => setConfirmingDelete(false) });
+        }}
+        onCancel={() => setConfirmingDelete(false)}
+      />
     </motion.div>
   );
 }

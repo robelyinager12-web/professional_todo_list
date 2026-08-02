@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { Archive } from "lucide-react";
 import { useTasks } from "../../../../hooks/useTasks";
 import TaskCard from "../../../../components/tasks/TaskCard";
 import TaskModal from "../../../../components/tasks/TaskModal";
+import LoadingSkeleton from "../../../../components/shared/LoadingSkeleton";
+import EmptyState from "../../../../components/shared/EmptyState";
 import type { Task } from "../../../../types/task";
 
 export default function ArchivedPage() {
@@ -21,11 +24,7 @@ export default function ArchivedPage() {
       <h1 className="mb-6 text-xl font-semibold text-foreground">Archived</h1>
 
       {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />
-          ))}
-        </div>
+        <LoadingSkeleton count={3} />
       ) : tasks && tasks.length > 0 ? (
         <div className="space-y-3">
           {tasks.map((task) => (
@@ -33,9 +32,7 @@ export default function ArchivedPage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-border py-16 text-center">
-          <p className="text-sm text-muted-foreground">No archived tasks.</p>
-        </div>
+        <EmptyState icon={Archive} title="No archived tasks" description="Tasks you archive will show up here." />
       )}
 
       <TaskModal open={modalOpen} onClose={() => setModalOpen(false)} task={editingTask} />
