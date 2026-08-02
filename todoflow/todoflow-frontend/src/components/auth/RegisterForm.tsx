@@ -23,39 +23,41 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm space-y-4">
-      <div>
-        <label htmlFor="fullName" className="mb-1.5 block text-sm font-medium text-foreground">
-          Full Name
-        </label>
-        <input
-          id="fullName"
-          placeholder="Jane Doe"
-          {...register("fullName")}
-          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none ring-primary/40 transition focus:ring-2"
-        />
-        {errors.fullName && (
-          <p className="mt-1 text-xs text-destructive">{errors.fullName.message}</p>
-        )}
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-sm space-y-3">
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="fullName" className="mb-1 block text-xs font-medium text-foreground">
+            Full Name
+          </label>
+          <input
+            id="fullName"
+            placeholder="Jane Doe"
+            {...register("fullName")}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+          />
+          {errors.fullName && (
+            <p className="mt-0.5 text-[11px] text-destructive">{errors.fullName.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="username" className="mb-1 block text-xs font-medium text-foreground">
+            Username
+          </label>
+          <input
+            id="username"
+            placeholder="janedoe"
+            {...register("username")}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+          />
+          {errors.username && (
+            <p className="mt-0.5 text-[11px] text-destructive">{errors.username.message}</p>
+          )}
+        </div>
       </div>
 
       <div>
-        <label htmlFor="username" className="mb-1.5 block text-sm font-medium text-foreground">
-          Username
-        </label>
-        <input
-          id="username"
-          placeholder="janedoe"
-          {...register("username")}
-          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none ring-primary/40 transition focus:ring-2"
-        />
-        {errors.username && (
-          <p className="mt-1 text-xs text-destructive">{errors.username.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">
+        <label htmlFor="email" className="mb-1 block text-xs font-medium text-foreground">
           Email
         </label>
         <input
@@ -63,44 +65,46 @@ export default function RegisterForm() {
           type="email"
           placeholder="you@example.com"
           {...register("email")}
-          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none ring-primary/40 transition focus:ring-2"
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
         />
-        {errors.email && <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>}
+        {errors.email && <p className="mt-0.5 text-[11px] text-destructive">{errors.email.message}</p>}
       </div>
 
-      <div>
-        <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-foreground">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="••••••••"
-          {...register("password")}
-          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none ring-primary/40 transition focus:ring-2"
-        />
-        {errors.password && (
-          <p className="mt-1 text-xs text-destructive">{errors.password.message}</p>
-        )}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="password" className="mb-1 block text-xs font-medium text-foreground">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            {...register("password")}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+          />
+          {errors.password && (
+            <p className="mt-0.5 text-[11px] text-destructive">{errors.password.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="confirmPassword" className="mb-1 block text-xs font-medium text-foreground">
+            Confirm
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            placeholder="••••••••"
+            {...register("confirmPassword")}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+          />
+          {errors.confirmPassword && (
+            <p className="mt-0.5 text-[11px] text-destructive">{errors.confirmPassword.message}</p>
+          )}
+        </div>
       </div>
 
-      <div>
-        <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-medium text-foreground">
-          Confirm Password
-        </label>
-        <input
-          id="confirmPassword"
-          type="password"
-          placeholder="••••••••"
-          {...register("confirmPassword")}
-          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm outline-none ring-primary/40 transition focus:ring-2"
-        />
-        {errors.confirmPassword && (
-          <p className="mt-1 text-xs text-destructive">{errors.confirmPassword.message}</p>
-        )}
-      </div>
-
-      <label className="flex items-start gap-2 text-sm text-muted-foreground">
+      <label className="flex items-start gap-2 text-xs text-muted-foreground">
         <input type="checkbox" {...register("acceptTerms")} className="mt-0.5 rounded border-border" />
         <span>
           I agree to the{" "}
@@ -114,7 +118,7 @@ export default function RegisterForm() {
         </span>
       </label>
       {errors.acceptTerms && (
-        <p className="text-xs text-destructive">{errors.acceptTerms.message}</p>
+        <p className="text-[11px] text-destructive">{errors.acceptTerms.message}</p>
       )}
 
       <button
@@ -125,7 +129,7 @@ export default function RegisterForm() {
         {registerUser.isPending ? "Creating account..." : "Create Account"}
       </button>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-xs text-muted-foreground">
         Already have an account?{" "}
         <Link href="/login" className="font-medium text-primary hover:underline">
           Sign in
