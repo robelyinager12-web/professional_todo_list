@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { createCategorySchema, updateCategorySchema } from "../validators/category.validator";
+import { createCategorySchema, updateCategorySchema, shareCategorySchema } from "../validators/category.validator";
 import * as categoryService from "../services/category.service";
 
 function getUserId(req: Request) {
@@ -50,4 +50,28 @@ export async function deleteCategory(req: Request, res: Response) {
   }
 
   res.status(204).send();
+}
+
+export async function shareCategory(req: Request, res: Response) {
+  const parsed = shareCategorySchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({ message: parsed.error.issues[0].message });
+  }
+
+  try {
+    const member = await categoryService.shareCategory(getUserId(req), req.params.id, parsed.data.email);
+    res.status(201).json({ member });
+  } catch (err) {
+    res.status(400).json({ message: (err as Error).message });
+  }
+}
+
+export async function removeMember(req: Request, res: Response) {
+  try {
+    await categoryService.removeMember(getUserId(req), req.params.id, req.params.userId);
+    res.status(204).send();
+  } catch (err) {
+    res.status(400).json({ message: (err as Error).message });
+  }
 }

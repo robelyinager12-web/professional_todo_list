@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Users } from "lucide-react";
 import { useCategories, useCreateCategory, useDeleteCategory } from "../../../../hooks/useCategories";
+import { useAuthStore } from "../../../../store/authStore";
+import ShareCategoryModal from "../../../../components/categories/ShareCategoryModal";
+import type { CategoryWithMembers } from "../../../../types/category";
 
 const PRESET_COLORS = ["#6366f1", "#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
 
@@ -10,9 +13,11 @@ export default function CategoriesPage() {
   const { data: categories, isLoading } = useCategories();
   const createCategory = useCreateCategory();
   const deleteCategory = useDeleteCategory();
+  const currentUser = useAuthStore((state) => state.user);
 
   const [name, setName] = useState("");
   const [color, setColor] = useState(PRESET_COLORS[0]);
+  const [sharingCategory, setSharingCategory] = useState<CategoryWithMembers | null>(null);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,29 +71,51 @@ export default function CategoriesPage() {
         </div>
       ) : categories && categories.length > 0 ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              className="group flex items-center justify-between rounded-xl border border-border bg-card p-4"
-            >
-              <div className="flex items-center gap-2.5">
-                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: category.color }} />
-                <span className="text-sm font-medium text-foreground">{category.name}</span>
-              </div>
-              <button
-                onClick={() => deleteCategory.mutate(category.id)}
-                className="text-muted-foreground opacity-0 transition hover:text-destructive group-hover:opacity-100"
+          {categories.map((category) => {
+            const isOwner = category.userId === currentUser?.id;
+
+            return (
+              <div
+                key={category.id}
+                className="group flex items-center justify-between rounded-xl border border-border bg-card p-4"
               >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          ))}
+                <div className="flex items-center gap-2.5">
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: category.color }} />
+                  <div>
+                    <span className="text-sm font-medium text-foreground">{category.name}</span>
+                    {!isOwner && <p className="text-xs text-muted-foreground">Shared with you</p>}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100">
+                  {isOwner && (
+                    <>
+                      <button
+                        onClick={() => setSharingCategory(category)}
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        <Users size={14} />
+                      </button>
+                      <button
+                        onClick={() => deleteCategory.mutate(category.id)}
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-border py-16 text-center">
           <p className="text-sm text-muted-foreground">No categories yet. Add your first one above.</p>
         </div>
       )}
+
+      <ShareCategoryModal category={sharingCategory} onClose={() => setSharingCategory(null)} />
     </div>
   );
 }

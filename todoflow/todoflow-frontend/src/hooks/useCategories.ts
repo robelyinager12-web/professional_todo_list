@@ -57,3 +57,35 @@ export function useDeleteCategory() {
     },
   });
 }
+
+export function useShareCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ categoryId, email }: { categoryId: string; email: string }) =>
+      categoryApi.shareCategory(categoryId, email),
+    onSuccess: (member) => {
+      queryClient.invalidateQueries({ queryKey: CATEGORIES_KEY });
+      toast.success(`Shared with ${member.user.fullName}`);
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Could not share category");
+    },
+  });
+}
+
+export function useRemoveMember() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ categoryId, userId }: { categoryId: string; userId: string }) =>
+      categoryApi.removeMember(categoryId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CATEGORIES_KEY });
+      toast.success("Access removed");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Could not remove access");
+    },
+  });
+}
